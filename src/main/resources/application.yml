@@ -1,0 +1,98 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ai-mcp-orchestration
+
+  jackson:
+    property-naming-strategy: LOWER_CAMEL_CASE
+    serialization:
+      write-dates-as-timestamps: false
+
+  webflux:
+    base-path: /api
+
+# AI Provider Configuration
+ai:
+  providers:
+    claude:
+      enabled: true
+      api-key:
+      model: claude-3-5-sonnet-20241022
+      max-tokens: 4000
+      temperature: 0.3
+
+    openai:
+      enabled: false
+      api-key: ${OPENAI_API_KEY:}
+      model: gpt-4-turbo
+      max-tokens: 4000
+      temperature: 0.3
+
+    gemini:
+      enabled: false
+      api-key: ${GEMINI_API_KEY:}
+      model: gemini-pro
+      max-tokens: 4000
+      temperature: 0.3
+
+    default-provider: claude
+
+# MCP Server Configuration (Single source of truth)
+mcp:
+  connection-timeout: 30000
+  read-timeout: 60000
+  retry-attempts: 3
+  health-check-interval: 60000
+  auto-discovery-enabled: true
+  servers:
+    postgres-mcp:
+      name: PostgreSQL MCP Server
+      base-url: http://localhost:8081
+      description: PostgreSQL database integration via MCP
+      timeout: 30000
+      enabled: true
+      priority: 1
+      auth:
+        type: none
+      headers:
+        Content-Type: application/json
+
+
+# Context Management Configuration
+context:
+  session-timeout: 3600000  # 1 hour in milliseconds
+  max-sessions: 10000
+  cleanup-interval: 300000  # 5 minutes
+  max-history-size: 100
+
+# Orchestration Configuration
+orchestration:
+  default-max-steps: 10
+  default-timeout: 30000
+  max-concurrent-requests: 100
+  request-queue-size: 1000
+
+# Logging Configuration
+logging:
+  level:
+    com.aimcp.orchestration: debug
+    org.springframework.web.reactive: WARN
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management Endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true

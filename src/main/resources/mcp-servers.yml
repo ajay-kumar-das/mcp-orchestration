@@ -1,0 +1,57 @@
+servers:
+  database-servers:
+    postgres-mcp:
+      name: "PostgreSQL MCP Server"
+      type: "database"
+      baseUrl: "http://localhost:8081"
+      description: "Provides database query and analysis capabilities"
+      capabilities:
+        - query_execution
+        - schema_discovery
+        - data_analysis
+      auth:
+        type: "none"
+      timeout: 30000
+    mysql-mcp:
+      name: "MySQL MCP Server"
+      type: "database"
+      baseUrl: "http://localhost:8083"
+      description: "MySQL database integration"
+      capabilities:
+        - query_execution
+        - schema_discovery
+      auth:
+        type: "basic"
+        username: "${MYSQL_USERNAME:admin}"
+        password: "${MYSQL_PASSWORD:password}"
+      timeout: 25000
+  file-servers:
+    filesystem-mcp:
+      name: "Filesystem MCP Server"
+      type: "filesystem"
+      baseUrl: "http://localhost:8082"
+      description: "File system operations and document processing"
+      capabilities:
+        - file_read
+        - file_write
+        - directory_listing
+        - document_processing
+      auth:
+        type: "apikey"
+        apiKey: "${FILESYSTEM_API_KEY:your-api-key}"
+        header: "X-API-Key"
+      timeout: 20000
+  api-servers:
+    weather-mcp:
+      name: "Weather API MCP Server"
+      type: "api"
+      baseUrl: "http://localhost:8084"
+      description: "Weather data and forecasting"
+      capabilities:
+        - current_weather
+        - weather_forecast
+        - historical_data
+      auth:
+        type: "bearer"
+        token: "${WEATHER_API_TOKEN:your-weather-token}"
+      timeout: 15000
